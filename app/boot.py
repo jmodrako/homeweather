@@ -3,6 +3,8 @@ import machine
 import network
 import secrets
 
+WITH_VERSION_CHECK = True
+
 def connect_wlan(ssid, password):
     """Connects build-in WLAN interface to the network.
     Args:
@@ -40,6 +42,9 @@ def main():
 
     connect_wlan(SSID, PASSWORD)
 
+    if not WITH_VERSION_CHECK:
+        return
+
     import senko
     OTA = senko.Senko(user="jmodrako", repo="homeweather", branch="main", working_dir="app", files=["main.py"])
     if OTA.fetch():
@@ -54,4 +59,5 @@ def main():
 
 if __name__ == "__main__":
     main()
+
 

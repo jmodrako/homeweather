@@ -15,6 +15,7 @@ SLEEP_INTERVAL_SECONDS = 5
 USE_WLAN_HW_SWITCH = True
 USE_LOGGING = False
 USE_STATIC_IP = False
+WITH_DATA_HTTP_REPORT = True
 
 batteryAdc = machine.ADC(26) 
 
@@ -158,9 +159,13 @@ def measureDataAndSend():
         pressure = bmeData[1]
         humidity = bmeData[2]
         batteryVoltage = measureBatteryVoltage()
-        endpoint = secrets.secrets['endpoint']
-        r = urequests.get(endpoint + "/?vsys=" + str(vs) + "&mem_free=" + str(freeMemory) + "&mem_allocated=" + str(allocatedMemory) + "&temperature=" + str(temperature) + "&humidity=" + str(humidity) + "&pressure=" + str(pressure) + "&battery=" + str(batteryVoltage))
-        r.close()
+
+        print("Vsys: {}, free mem.: {}, allocated mem.: {}, temp.: {}, pressure: {}, humidity: {}".format(vs,freeMemory,allocatedMemory,temperature,pressure,humidity))
+
+        if WITH_DATA_HTTP_REPORT:
+            endpoint = secrets.secrets['endpoint']
+            r = urequests.get(endpoint + "/?vsys=" + str(vs) + "&mem_free=" + str(freeMemory) + "&mem_allocated=" + str(allocatedMemory) + "&temperature=" + str(temperature) + "&humidity=" + str(humidity) + "&pressure=" + str(pressure) + "&battery=" + str(batteryVoltage))
+            r.close()
     except Exception as e:
       print("EXCEPTION CAPTURED (measureVsysAndSend):\n",e)
 
